@@ -413,8 +413,14 @@ void Console_Print_Long(const std::string& str);
 
 // thread-safe template version of ThisStdCall()
 template <typename ThisType, typename... Ts>
-UInt32 ThisStdCall(UInt32 addr, ThisType* This, Ts...  args){
+__forceinline UInt32 ThisStdCall(UInt32 addr, ThisType* This, Ts...  args){
 	class T {}; union { UInt32 x; UInt32 (T::*m)(Ts...); } u = { addr };
+	return ((T*)This->*u.m)(args...);
+}
+
+template <typename RetType,typename ThisType ,typename... Ts>
+__forceinline RetType ThisStdCallRetn(UInt32 addr, ThisType* This, Ts...  args){
+	class T {}; union { UInt32 x; RetType (T::*m)(Ts...); } u = { addr };
 	return ((T*)This->*u.m)(args...);
 }
 // thread safe version of virtual ThisStdCall()

@@ -1,4 +1,4 @@
-
+#include "SafeWrite.h"
 void SafeWrite8(UInt32 addr, UInt32 data)
 {
 	UInt32	oldProtect;
@@ -17,7 +17,7 @@ void SafeWrite16(UInt32 addr, UInt32 data)
 	VirtualProtect((void *)addr, 4, oldProtect, &oldProtect);
 }
 
-void SafeWrite32(UInt32 addr, UInt32 data)
+void __declspec(noinline) SafeWrite32Inner(UInt32 addr, UInt32 data)
 {
 	UInt32	oldProtect;
 
@@ -96,7 +96,7 @@ void PatchCallsInRange(UInt32 start, UInt32 end, UInt32 CallToPatch, UInt32 Hook
 	/*
 	006020FB 054                 db  61h ; a
 .text:006020FC 054                 db  59h ; Y
-.text:006020FD 054                 db 0EAh ; ê
-.text:006020FE 054                 db 0FFh ; ÿ
+.text:006020FD 054                 db 0EAh ; ï¿½
+.text:006020FE 054                 db 0FFh ; ï¿½
 	*/
 }
