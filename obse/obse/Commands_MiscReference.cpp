@@ -654,16 +654,16 @@ struct CellScanInfo
 
 		if (world && cellDepth)		//exterior, cell depth > 0
 		{
-			curX = cell->coords->x - cellDepth;
-			curY = cell->coords->y - cellDepth;
+			curX = cell->cellData.coords->x - cellDepth;
+			curY = cell->cellData.coords->y - cellDepth;
 			curCell = world->LookupCell(curX, curY);
 		}
 		else
 		{
 			cellDepth = 0;
 			curCell = cell;
-			curX = cell->coords->x;
-			curY = cell->coords->y;
+			curX = cell->cellData.coords->x;
+			curY = cell->cellData.coords->y;
 		}
 	}
 
@@ -677,9 +677,9 @@ struct CellScanInfo
 
 		do
 		{
-			if (curX - cell->coords->x == cellDepth)
+			if (curX - cell->cellData.coords->x == cellDepth)
 			{
-				if (curY - cell->coords->y == cellDepth)
+				if (curY - cell->cellData.coords->y == cellDepth)
 				{
 					curCell = NULL;
 					return false;

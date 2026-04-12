@@ -201,7 +201,7 @@ static bool Cmd_GetCellLighting_Execute(COMMAND_ARGS)
 	ArrayID arr = g_ArrayMap.Create(kDataType_String, false, scriptObj->GetModIndex());
 	TESObjectCELL* cell = NULL;
 	if (ExtractArgs(PASS_EXTRACT_ARGS, &cell) && cell && cell->IsInterior()) {
-		TESObjectCELL::LightingData* data = cell->lighting;
+		TESObjectCELL::LightingData* data = cell->cellData.lighting;
 		if (data) {
 			g_ArrayMap.SetElementArray(arr, "ambient", RGBAToArray(data->ambient, scriptObj));
 			g_ArrayMap.SetElementArray(arr, "directional", RGBAToArray(data->directional, scriptObj));
@@ -247,38 +247,38 @@ static bool Cmd_SetCellLighting_Execute(COMMAND_ARGS)
 	if (eval.ExtractArgs() && eval.NumArgs() == 2) {
 		TESObjectCELL* cell = OBLIVION_CAST(eval.Arg(0)->GetTESForm(), TESForm, TESObjectCELL);
 		ArrayID data = eval.Arg(1)->GetArray();
-		if (cell && data && cell->IsInterior() && cell->lighting && g_ArrayMap.GetKeyType(data) == kDataType_String) {
+		if (cell && data && cell->IsInterior() && cell->cellData.lighting && g_ArrayMap.GetKeyType(data) == kDataType_String) {
 			ArrayID arr;
 			double num;
 
 			if (g_ArrayMap.GetElementArray(data, "ambient", &arr)) {
-				SetRGBFromArray(arr, cell->lighting->ambient);
+				SetRGBFromArray(arr, cell->cellData.lighting->ambient);
 			}
 			if (g_ArrayMap.GetElementArray(data, "directional", &arr)) {
-				SetRGBFromArray(arr, cell->lighting->directional);
+				SetRGBFromArray(arr, cell->cellData.lighting->directional);
 			}
 			if (g_ArrayMap.GetElementArray(data, "fog", &arr)) {
-				SetRGBFromArray(arr, cell->lighting->fog);
+				SetRGBFromArray(arr, cell->cellData.lighting->fog);
 			}
 			if (g_ArrayMap.GetElementNumber(data, "rotxy", &num)) {
 				// ###TODO: limits
-				cell->lighting->rotXY = num;
+				cell->cellData.lighting->rotXY = num;
 			}
 			if (g_ArrayMap.GetElementNumber(data, "rotz", &num)) {
 				// ###TODO: limits
-				cell->lighting->rotZ = num;
+				cell->cellData.lighting->rotZ = num;
 			}
 			if (g_ArrayMap.GetElementNumber(data, "fognear", &num)) {
-				cell->lighting->fogNear = num;
+				cell->cellData.lighting->fogNear = num;
 			}
 			if (g_ArrayMap.GetElementNumber(data, "fogfar", &num)) {
-				cell->lighting->fogFar = num;
+				cell->cellData.lighting->fogFar = num;
 			}
 			if (g_ArrayMap.GetElementNumber(data, "clip", &num)) {
-				cell->lighting->fogClipDistance = num;
+				cell->cellData.lighting->fogClipDistance = num;
 			}
 			if (g_ArrayMap.GetElementNumber(data, "fade", &num)) {
-				cell->lighting->directionalFade = num;
+				cell->cellData.lighting->directionalFade = num;
 			}
 
 			*result = 1.0;

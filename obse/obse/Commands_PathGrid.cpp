@@ -37,15 +37,15 @@ TESObjectCELL* GetAbsoluteCell(float x, float y)
 TESObjectCELL* GetRelativeCell(SInt32 dx, SInt32 dy)
 {
 	TESObjectCELL* cur = GetCurrentCell();
-	if (cur->IsInterior() || !cur->coords) {
+	if (cur->IsInterior() || !cur->cellData.coords) {
 		return (dx == 0 && dy == 0) ? cur : NULL;
 	}
 	else if (dx == 0 && dy == 0) {
 		return cur;
 	}
 	else if (cur->worldSpace) {
-		dx += cur->coords->x;
-		dy += cur->coords->y;
+		dx += cur->cellData.coords->x;
+		dy += cur->cellData.coords->y;
 		return cur->worldSpace->LookupCell(dx, dy);
 	}
 
@@ -239,8 +239,8 @@ static bool Cmd_GetAllPathNodes_Execute(COMMAND_ARGS)
 			cellY = 0;
 		}
 		else {
-			cellX = cur->coords->x;
-			cellY = cur->coords->y;
+			cellX = cur->cellData.coords->x;
+			cellY = cur->cellData.coords->y;
 		}
 
 		double curIdx = 0.0;
@@ -343,11 +343,11 @@ static bool Cmd_AddPathNode_Execute(COMMAND_ARGS)
 		if (cell && cell->pathGrid) {
 			SInt32 dx = 0;
 			SInt32 dy = 0;
-			if (!cell->IsInterior() && cell->coords) {
+			if (!cell->IsInterior() && cell->cellData.coords) {
 				TESObjectCELL* curCell = (*g_thePlayer)->parentCell;
-				if (curCell && curCell->coords && curCell != cell) {
-					dx = cell->coords->x - curCell->coords->x;
-					dy = cell->coords->y - curCell->coords->y;
+				if (curCell && curCell->cellData.coords && curCell != cell) {
+					dx = cell->cellData.coords->x - curCell->cellData.coords->x;
+					dy = cell->cellData.coords->y - curCell->cellData.coords->y;
 				}
 			}
 
@@ -426,9 +426,9 @@ public:
 		if (cell && cell->pathGrid) {
 			SInt32 dx = 0;
 			SInt32 dy = 0;
-			if (!cell->IsInterior() && cell->coords) {
-				dx = cell->coords->x - m_cell->coords->x;
-				dy = cell->coords->y - m_cell->coords->y;
+			if (!cell->IsInterior() && cell->cellData.coords) {
+				dx = cell->cellData.coords->x - m_cell->cellData.coords->x;
+				dy = cell->cellData.coords->y - m_cell->cellData.coords->y;
 			}
 			m_edges.insert(Edge(m_nodeID, NodeID(cell->pathGrid->IndexOf(to), dx, dy)));
 		}
@@ -665,7 +665,7 @@ public:
 				m_cur = m_topLeft;
 			}
 			else {
-				m_topLeft = Pos(initialCell->coords->x, initialCell->coords->y);
+				m_topLeft = Pos(initialCell->cellData.coords->x, initialCell->cellData.coords->y);
 				m_bottomRight = m_topLeft;
 				m_cur = m_topLeft;
 			}
@@ -711,7 +711,7 @@ typedef std::vector<NodeID> NodeList;
 Rect GetExteriorCellRect(TESObjectCELL* cell)
 {
 	static Vector2 s_extents(Vector2(fCellExtent, fCellExtent));
-	return Rect(Vector2(cell->coords->x * fCellDimension + fCellExtent, cell->coords->y * fCellDimension + fCellExtent), s_extents, 0);
+	return Rect(Vector2(cell->cellData.coords->x * fCellDimension + fCellExtent, cell->cellData.coords->y * fCellDimension + fCellExtent), s_extents, 0);
 }
 
 // keeps track of which partitions in a cell have been tested for intersection with an area
@@ -754,8 +754,8 @@ public:
 		: m_area(area), m_playerCellX(0), m_playerCellY(0), m_bIncludeDisabled(bIncludeDisabledNodes)  {
 		m_centerCell = (*g_thePlayer)->parentCell;
 		if (m_centerCell && !m_centerCell->IsInterior()) {
-			m_playerCellX = m_centerCell->coords->x;
-			m_playerCellY = m_centerCell->coords->y;
+			m_playerCellX = m_centerCell->cellData.coords->x;
+			m_playerCellY = m_centerCell->cellData.coords->y;
 
 			const Vector2& center = area.GetCenter();
 			m_centerCell = GetAbsoluteCell(center.x, center.y);
@@ -777,8 +777,8 @@ public:
 				SInt32 curCellDX = 0;
 				SInt32 curCellDY = 0;
 				if (!curCell->IsInterior()) {
-					curCellDX = curCell->coords->x - m_playerCellX;
-					curCellDY = curCell->coords->y - m_playerCellY;
+					curCellDX = curCell->cellData.coords->x - m_playerCellX;
+					curCellDY = curCell->cellData.coords->y - m_playerCellY;
 
 					// NodeID can't support distances greater than 7 from the current cell
 					// But cells that far away are not likely to be loaded in memory anyway
