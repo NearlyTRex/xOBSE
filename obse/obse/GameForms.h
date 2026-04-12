@@ -344,8 +344,7 @@ public:
 		// ### need to figure out which objects these belong to
 		kModified_GoldValue = 0x00000008,
 		kModified_Name =      0x00000080,
-		kModified_Inventory = 0x08000000
-
+		kModified_Inventory = 0x08000000 //TODO see same value for other stuff, maybe this is only for Actor?
 	};
 
 	virtual void	Destroy(bool Dealloc);	// delete form, pass true to deallocate?
@@ -3206,7 +3205,7 @@ public:
 	float	unk028;
 };
 
-// 58
+// 0x58, 
 class TESObjectCELL : public TESForm
 {
 public:
@@ -3335,8 +3334,11 @@ public:
 	void SetCantWait(bool bSet);
 
 };
+#if OBLIVION
 STATIC_ASSERT(sizeof(TESObjectCELL) == 0x58);
-
+#else
+STATIC_ASSERT(sizeof(TESObjectCELL) == 100);
+#endif
 typedef Visitor<TESObjectCELL::ObjectListEntry, TESObjectREFR> CellListVisitor;
 
 // TESObjectREFR
