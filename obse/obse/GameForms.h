@@ -339,11 +339,13 @@ public:
 			// UInt32	flags;
 	};
 
-	enum
+	enum ModifiedFlags
 	{
 		// ### need to figure out which objects these belong to
-		kModified_GoldValue = 0x08,
-		kModified_Name = 0x80
+		kModified_GoldValue = 0x00000008,
+		kModified_Name =      0x00000080,
+		kModified_Inventory = 0x08000000
+
 	};
 
 	virtual void	Destroy(bool Dealloc);	// delete form, pass true to deallocate?
@@ -607,12 +609,6 @@ public:
 class TESValueForm : public BaseFormComponent
 {
 public:
-	enum
-	{
-		kModified_GoldValue =	0x00000008,
-			// UInt32	value
-	};
-
 	TESValueForm();
 	~TESValueForm();
 
@@ -3263,7 +3259,7 @@ public:
 		kFlags0_InvertFastTravelBeheviour =	1 << 2,
 		kFlags0_ForceHideLand =			    1 << 3,	// shared bit - for exterior
 		kFlags0_OblivionInterior =		    1 << 3,	// shared bit - for interior
-		kFlags0_Unk4 =					    1 << 4,
+		kFlags0_Unk4 =					    1 << 4, //Seen inside sub_4C9F80. Some sort of IsLoaded?
 		kFlags0_Public =				    1 << 5,
 		kFlags0_HandChanged =			    1 << 6,
 		kFlags0_BehaveLikeExterior =	    1 << 7,
@@ -3313,7 +3309,7 @@ public:
 	union {
 		CellCoordinates * coords;		// if exterior
 		LightingData	* lighting;		// if interior
-	};								// 3C
+	} cellData;								// 3C
 	TESObjectLAND	* land;			// 040
 	TESPathGrid		* pathGrid;		// 044
 	ObjectListEntry	objectList;		//048
@@ -3339,6 +3335,7 @@ public:
 	void SetCantWait(bool bSet);
 
 };
+STATIC_ASSERT(sizeof(TESObjectCELL) == 0x58);
 
 typedef Visitor<TESObjectCELL::ObjectListEntry, TESObjectREFR> CellListVisitor;
 
