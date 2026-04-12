@@ -1,6 +1,6 @@
 #pragma once
 template<typename T>
-concept IntegerOrPointer = std::is_same<T,UInt32>::value || (std::is_pointer<T>::value && std::is_function<std::remove_pointer_t<T>>::value);
+concept IntegerOrPointer = std::is_same<T,UInt32>::value || std::is_same<T, unsigned int>::value || (std::is_pointer<T>::value && std::is_function<std::remove_pointer_t<T>>::value);
 
 void SafeWrite8(UInt32 addr, UInt32 data);
 void SafeWrite16(UInt32 addr, UInt32 data);
